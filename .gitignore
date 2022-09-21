@@ -1,0 +1,8 @@
+bin
+
+# Ignores issues with setting cache
+blobs
+ingest
+testing
+index.json
+oci-layout

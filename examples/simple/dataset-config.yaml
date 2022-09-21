@@ -1,0 +1,14 @@
+kind: DataSetConfiguration
+apiVersion: client.uor-framework.io/v1alpha1
+collection:
+  files:
+    - file: "*-dev.yaml"
+      attributes:
+        dev: true
+    - file: "*-prod.yaml"
+      attributes:
+        prod: true
+    - file: "service.yaml"
+      attributes:
+        dev: true
+        prod: true

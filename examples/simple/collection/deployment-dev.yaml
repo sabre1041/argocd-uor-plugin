@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: httpd
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/instance: httpd
+  name: httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: httpd
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        deployment: httpd
+    spec:
+      containers:
+        - image: "registry.redhat.io/rhscl/httpd-24-rhel7@sha256:d5e152aec161c9cb0ede83e25040d70e80dc10fc100530038011ae560d91784d"
+          name: httpd
+          env:
+            - name: ENVIRONMENT
+              value: "DEV"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
