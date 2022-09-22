@@ -12,3 +12,7 @@ collection:
       attributes:
         dev: true
         prod: true
+    - file: "route.yaml"
+      attributes:
+        dev: true
+        prod: true

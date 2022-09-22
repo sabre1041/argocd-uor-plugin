@@ -1,31 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: simple-uor
   labels:
-    app: httpd
-    app.kubernetes.io/component: httpd
-    app.kubernetes.io/instance: httpd
-  name: httpd
+    app.kubernetes.io/name: simple-uor
+    app.kubernetes.io/instance: simple-uor
 spec:
   replicas: 1
   selector:
     matchLabels:
-      deployment: httpd
-  strategy: {}
+      app.kubernetes.io/name: simple-uor
+      app.kubernetes.io/instance: simple-uor
   template:
     metadata:
       labels:
-        deployment: httpd
+        app.kubernetes.io/name: simple-uor
+        app.kubernetes.io/instance: simple-uor
     spec:
       containers:
-        - image: "registry.redhat.io/rhscl/httpd-24-rhel7@sha256:d5e152aec161c9cb0ede83e25040d70e80dc10fc100530038011ae560d91784d"
-          name: httpd
+        - name: web
+          image: quay.io/ablock/gitops-helm-quarkus:latest
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
           env:
             - name: ENVIRONMENT
-              value: "prod"
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-            - containerPort: 8443
-              protocol: TCP
-          resources: {}
+              value: prod

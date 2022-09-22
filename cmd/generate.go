@@ -51,7 +51,7 @@ func NewGenerateCommand(pluginOptions *PluginOptions) *cobra.Command {
 
 		Run: func(cmd *cobra.Command, args []string) {
 
-			// TODO: Undo anual bind for now
+			// TODO: Undo manual bind for now
 			generatePluginOptions.ClientPullOptions.Source = viper.GetString("collection")
 			generatePluginOptions.AttributeQuery = viper.GetString("attribute-query")
 			generatePluginOptions.ClientPullOptions.PlainHTTP = viper.GetBool("plain-http")

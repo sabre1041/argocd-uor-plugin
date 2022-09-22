@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: simple-uor
+  labels:
+    app.kubernetes.io/name: simple-uor
+    app.kubernetes.io/instance: simple-uor
+spec:
+  to:
+    kind: Service
+    name: simple-uor
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

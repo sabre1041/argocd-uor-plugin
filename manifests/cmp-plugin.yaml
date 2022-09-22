@@ -13,7 +13,10 @@ data:
       allowConcurrency: true
       discover:
         find:
-          glob: "**/*"
+          command:
+            - sh
+            - "-c"
+            - 'if [[ -z "${ARGOCD_ENV_COLLECTION}" ]]; then exit 1; else echo "Repository Supports UOR"; fi'
       generate:
         command:
           - argocd-uor-plugin
