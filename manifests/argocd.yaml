@@ -46,6 +46,9 @@ spec:
   server:
     route:
       enabled: true
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: reencrypt
   dex:
     openShiftOAuth: true
   rbac:
