@@ -19,5 +19,7 @@ spec:
     repoURL: https://github.com/sabre1041/argocd-uor-plugin
     targetRevision: HEAD
   syncPolicy:
+    automated:
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
