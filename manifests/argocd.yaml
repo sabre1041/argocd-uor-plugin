@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: openshift-gitops
+  namespace: openshift-gitops
+spec:
+  repo:
+    initContainers:
+      - command:
+          - /bin/sh
+          - "-c"
+          - >-
+            curl -L https://github.com/sabre1041/argocd-uor-plugin/releases/download/v0.0.1-alpha1/argocd-uor-plugin -o /custom-tools/argocd-uor-plugin && chmod +x /custom-tools/argocd-uor-plugin
+        image: "registry.redhat.io/ubi8/ubi:latest"
+        name: download-tools
+        volumeMounts:
+          - mountPath: /custom-tools
+            name: custom-tools
+    sidecarContainers:
+      - name: argocd-uor-plugin
+        command: [/var/run/argocd/argocd-cmp-server]
+        image: "registry.redhat.io/ubi8/ubi:latest"
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /tmp
+            name: tmp
+
+          # Register plugins into sidecar
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: plugin.yaml
+            name: cmp-plugin
+
+          # Important: Mount tools into $PATH
+          - name: custom-tools
+            subPath: argocd-uor-plugin
+            mountPath: /usr/local/bin/argocd-uor-plugin
+    volumes:
+      - configMap:
+          name: cmp-plugin
+        name: cmp-plugin
+      - name: custom-tools
+        emptyDir: {}
+
+  server:
+    route:
+      enabled: true
+  dex:
+    openShiftOAuth: true
+  rbac:
+    policy: g, argocdadmins, role:admin
+    scopes: "[groups]"

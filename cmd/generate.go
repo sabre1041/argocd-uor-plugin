@@ -18,7 +18,6 @@ import (
 type GeneratePluginOptions struct {
 	ClientPullOptions *client.PullOptions
 	AttributeQuery    string
-	Collection        string
 	SourceDirectory   string
 	// ProcessingDirectory string
 }
@@ -52,6 +51,13 @@ func NewGenerateCommand(pluginOptions *PluginOptions) *cobra.Command {
 
 		Run: func(cmd *cobra.Command, args []string) {
 
+			// TODO: Undo anual bind for now
+			generatePluginOptions.ClientPullOptions.Source = viper.GetString("collection")
+			generatePluginOptions.AttributeQuery = viper.GetString("attribute-query")
+			generatePluginOptions.ClientPullOptions.PlainHTTP = viper.GetBool("plain-http")
+			generatePluginOptions.ClientPullOptions.Insecure = viper.GetBool("insecure")
+			generatePluginOptions.ClientPullOptions.PullAll = viper.GetBool("linked-collections-pull")
+
 			cobra.CheckErr(generatePluginOptions.Complete(args))
 			cobra.CheckErr(generatePluginOptions.Run(cmd))
 		},
@@ -62,12 +68,6 @@ func NewGenerateCommand(pluginOptions *PluginOptions) *cobra.Command {
 
 	generateCmd.Flags().StringVarP(&generatePluginOptions.ClientPullOptions.Source, "collection", "c", "", "Collection to retrieve")
 	viper.BindPFlag("collection", generateCmd.Flags().Lookup("collection"))
-
-	// generateCmd.Flags().StringVarP(&generatePluginOptions.ProcessingDirectory, "directory", "d", "", "Directory of the retrieved collection to process")
-	// viper.BindPFlag("directory", generateCmd.Flags().Lookup("directory"))
-
-	// generateCmd.Flags().StringVarP(&generatePluginOptions.ClientPullOptions.Output, "output", "o", "output", "Directory the retrieved collections should be placed")
-	// viper.BindPFlag("output", generateCmd.Flags().Lookup("output"))
 
 	// UOR Client flags
 	generateCmd.Flags().BoolVarP(&generatePluginOptions.ClientPullOptions.PlainHTTP, "plain-http", "p", false, "Use plain http when contacting to external registries")
@@ -84,6 +84,7 @@ func NewGenerateCommand(pluginOptions *PluginOptions) *cobra.Command {
 }
 
 func (generatePluginOptions *GeneratePluginOptions) Complete(args []string) error {
+
 	if len(generatePluginOptions.ClientPullOptions.Source) == 0 {
 		return errors.New("Collection must be provided")
 	}

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmp-plugin
+data:
+  plugin.yaml: |
+    ---
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: argocd-uor-plugin
+    spec:
+      allowConcurrency: true
+      discover:
+        find:
+          glob: "**/*"
+      generate:
+        command:
+          - argocd-uor-plugin
+          - generate
+          - "."
+      lockRepo: false

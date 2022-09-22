@@ -39,6 +39,10 @@ func NewRootCommand() *cobra.Command {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
+}
+
+func initConfig() {
 	viper.SetEnvPrefix("ARGOCD_ENV")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 

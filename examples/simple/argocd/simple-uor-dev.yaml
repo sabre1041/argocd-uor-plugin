@@ -1,0 +1,22 @@
+kind: Application
+metadata:
+  name: simple-uor-dev
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: simple-uor-dev
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: examples/simple/source
+    plugin:
+      env:
+        - name: COLLECTION
+          value: ghcr.io/sabre1041/argocd-uor-plugin/simple:latest
+        - name: ATTRIBUTE_QUERY
+          value: attribute-query-dev.yaml
+    repoURL: https://github.com/sabre1041/argocd-uor-plugin
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
